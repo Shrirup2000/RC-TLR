@@ -1,9 +1,8 @@
-function [relativeError,reconstructionTime,metrics] = rc_htlr_relative_kernel_error( ...
+function [relativeError,metrics] = rc_htlr_relative_kernel_error( ...
     C,U,V,W,CP,validation,blockSize)
 %RC_HTLR_RELATIVE_KERNEL_ERROR Direct CP reference; no full reference tensor.
 %   'slice': paper's relative maximum error on k=floor(nz/2).
 %   'full' : relative Frobenius error over all entries.
-%   Times approximation contractions only; excludes reference and arithmetic.
     if nargin < 6 || isempty(validation), validation = 'slice'; end
     if nargin < 7 || isempty(blockSize), blockSize = 8; end
     validation = validatestring(validation,{'slice','full'});
@@ -12,18 +11,13 @@ function [relativeError,reconstructionTime,metrics] = rc_htlr_relative_kernel_er
     rx = size(U,2); ry = size(V,2); rz = size(W,2);
     assert(isequal(cellfun(@(a) size(a,1),CP.U),[nx ny nz]),'Reference grid mismatch.');
     assert(isequal([size(C,1) size(C,2) size(C,3)],[rx ry rz]),'Core size mismatch.');
-    reconstructionTime = 0;
     errorSquared = 0; referenceSquared = 0; errorMax = 0; referenceMax = 0;
     if strcmp(validation,'slice')
         k0 = max(1,floor(nz/2));
-        timerID = tic;
         sliceCore = reshape(reshape(C,rx*ry,rz)*W(k0,:).',rx,ry);
-        reconstructionTime = reconstructionTime+toc(timerID);
         for first = 1:blockSize:nx
             ix = first:min(first+blockSize-1,nx);
-            timerID = tic;
             approximation = (U(ix,:)*sliceCore)*V.';
-            reconstructionTime = reconstructionTime+toc(timerID);
             reference = rc_htlr_cp_values(CP,{ix,1:ny,k0});
             delta = approximation-reference;
             errorSquared = errorSquared+sum(abs(delta(:)).^2);
@@ -35,17 +29,13 @@ function [relativeError,reconstructionTime,metrics] = rc_htlr_relative_kernel_er
         % Tile x as well as z: avoid a persistent nx-by-ny-by-rz intermediate.
         for firstX = 1:blockSize:nx
             ix = firstX:min(firstX+blockSize-1,nx); bx = numel(ix);
-            timerID = tic;
             H = reshape(U(ix,:)*reshape(C,rx,ry*rz),bx,ry,rz);
             H = V*reshape(permute(H,[2 1 3]),ry,bx*rz);
             H = permute(reshape(H,ny,bx,rz),[2 1 3]);
             H = reshape(H,bx*ny,rz);
-            reconstructionTime = reconstructionTime+toc(timerID);
             for firstZ = 1:blockSize:nz
                 iz = firstZ:min(firstZ+blockSize-1,nz);
-                timerID = tic;
                 approximation = reshape(H*W(iz,:).',bx,ny,numel(iz));
-                reconstructionTime = reconstructionTime+toc(timerID);
                 reference = rc_htlr_cp_values(CP,{ix,1:ny,iz});
                 delta = approximation-reference;
                 errorSquared = errorSquared+sum(abs(delta(:)).^2);

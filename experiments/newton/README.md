@@ -5,12 +5,12 @@ This module contains the supplied MATLAB implementations for the cell-averaged C
 ## Requirements
 
 - MATLAB (R2024b is the development environment).
-- The Newton canonical factor data from [ChebTuck](https://github.com/bonans/ChebTuck/tree/2aa3729fe9991377bf1a6815ab3edd73423689dd/data/Newton_CP_-1_1).
+- The original Newton canonical factor data are bundled in this repository (see attribution below).
 - The Newton driver uses MATLAB built-in numerical routines; it does not call Chebfun or Tensor Toolbox.
 
 ## Data
 
-Download the original `Newt_canon_<n>.mat` files from the pinned [ChebTuck dataset directory](https://github.com/bonans/ChebTuck/tree/2aa3729fe9991377bf1a6815ab3edd73423689dd/data/Newton_CP_-1_1). Each file contains the canonical factor matrix `U1r`. Keep these files under `experiments/newton/data/Newton_CP_-1_1/`, or pass the absolute path to your existing dataset directory.
+The six original `Newt_canon_<n>.mat` files are bundled in [data/Newton_CP_-1_1](data/Newton_CP_-1_1/). Each file contains the canonical factor matrix `U1r`. The uploaded files have been verified byte for byte against the pinned [ChebTuck dataset directory](https://github.com/bonans/ChebTuck/tree/2aa3729fe9991377bf1a6815ab3edd73423689dd/data/Newton_CP_-1_1). No separate download is needed.
 
 Available grid sizes: 256, 512, 1024, 2048, 4096, 8192. The benchmark scales `U1r` by (1/h), where (h=2/n), and uses the cell-centred grid. The long-range part retains the first `ceil(R/2)-3` canonical columns, with (R) the full CP rank. These are cell-averaged kernel data, not point samples at the singularity.
 
@@ -41,7 +41,7 @@ For the standalone RC-TLR CP-input experiment:
 
 ```matlab
 opts = struct('n',256,'pValues',129,'dataDir',dataDir, ...
-              'warmups',0,'repeats',1,'qrTol',5e-8);
+              'qrTol',5e-8);
 [results,model,diagnostics] = rc_tlr_1d_experiment(opts);
 disp(results);
 ```
@@ -76,10 +76,10 @@ The RRQR tolerance and the target final approximation error are distinct paramet
 | `rc_htlr_cp_values.m`, `rc_htlr_relative_kernel_error.m` | CP block evaluation and error validation |
 | `rc_htlr_1d_experiment.m` | Backward-compatible alias for the renamed entry point |
 
-The grid storage reported is the selected/compressed core plus the three evaluated grid factors. The Newton sweep reports core dimensions, Tucker rank, relative maximum error, core storage and total storage, without runtime columns. The separate standalone driver retains its original diagnostic build timing.
+The grid storage reported is the selected/compressed core plus the three evaluated grid factors. The Newton sweep reports core dimensions, Tucker rank, relative maximum error, core storage and total storage. Neither entry point records runtime; the standalone driver constructs each approximation once and retains the RRQR and error diagnostics.
 
 ## Attribution and verification
 
 Benchmark input data originate from Benner, Khoromskij, Khoromskaia and Sun, *A Hybrid Chebyshev--Tucker Tensor Format for Approximation of Multivariate Functions*, [arXiv:2503.01696](https://arxiv.org/abs/2503.01696). See the [original repository](https://github.com/bonans/ChebTuck) and [upstream MIT license notice](LICENSE-ChebTuck.txt). No ChebTuck approximation implementation is included.
 
-The RC-TLR-only Newton driver retains the original RC-TLR construction and validation settings. Dependencies were inspected statically; MATLAB execution and verification against the manuscript tables are still pending. Input datasets and measured result tables are not bundled.
+The RC-TLR-only Newton driver retains the original RC-TLR construction and validation settings. Dependencies were inspected statically; MATLAB execution and verification against the manuscript tables are still pending. The original input datasets are bundled; measured result tables are not bundled.

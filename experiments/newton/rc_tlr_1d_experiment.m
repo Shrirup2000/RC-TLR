@@ -5,18 +5,15 @@ function [results, model, diagnostics] = rc_tlr_1d_experiment(options)
 %   validation metric is relative maximum error on the whole middle slice.
 %   Set validation='full' for the full-volume relative Frobenius error.
 %
-%   BuildSeconds is the median of repeated constructions of C,E1,E2,E3,U,V,W.
-%   TotalTime is the same value for callers using the previous column name.
-%   Data loading, U*E1, V*E2, W*E3, reconstruction and validation are outside
-%   this timer. TotalStorage counts the core and three evaluated grid factors.
+%   TotalStorage counts the core and three evaluated grid factors.
 %
-%   Defaults: warmups=1, repeats=5, strength=2, blockSize=8, stopWhenMet=true.
+%   Defaults: strength=2, blockSize=8, stopWhenMet=true.
 %   For custom input, provide CP, grids={x,y,z}, and the physical domain.
     if nargin < 1 || isempty(options), options = struct; end
     assert(isstruct(options) && isscalar(options),'Options must be a scalar struct.');
     opts = struct('n',256,'pValues',[129 257 513 1025], ...
         'tol',1e-7,'qrTol',5e-8,'strength',2,'blockSize',8, ...
-        'warmups',1,'repeats',5,'validation','slice','stopWhenMet',true, ...
+        'validation','slice','stopWhenMet',true, ...
         'dataDir',[],'CP',[],'grids',[],'domain',repmat([-1 1],3,1));
     names = fieldnames(options);
     for k = 1:numel(names)
@@ -30,8 +27,6 @@ function [results, model, diagnostics] = rc_tlr_1d_experiment(options)
     validateattributes(opts.qrTol,{'numeric'},{'scalar','real','finite','>',0,'<',1});
     validateattributes(opts.strength,{'numeric'},{'scalar','real','finite','>',1});
     validateattributes(opts.blockSize,{'numeric'},{'scalar','integer','positive','finite'});
-    validateattributes(opts.warmups,{'numeric'},{'scalar','integer','nonnegative','finite'});
-    validateattributes(opts.repeats,{'numeric'},{'scalar','integer','positive','finite'});
     validateattributes(opts.stopWhenMet,{'logical','numeric'},{'scalar','binary'});
     validateattributes(opts.domain,{'numeric'},{'size',[3 2],'real','finite'});
     assert(all(opts.domain(:,2)>opts.domain(:,1)),'Invalid domain.');
@@ -54,7 +49,6 @@ function [results, model, diagnostics] = rc_tlr_1d_experiment(options)
     ranks = zeros(count,3);
     coreStorage = cell(count,1);
     relativeError = zeros(count,1);
-    buildSeconds = zeros(count,1);
     totalStorage = zeros(count,1);
     diagnostics = cell(count,1);
 
@@ -66,22 +60,12 @@ function [results, model, diagnostics] = rc_tlr_1d_experiment(options)
     else
         fprintf('RelativeError uses the full-grid Frobenius norm.\n');
     end
-    fprintf('BuildSeconds includes construction of the selected core and six matrices.\n');
-    fprintf('%5s %18s %18s %18s %16s\n', ...
-        'p','CoreStorage','RelativeError','BuildSeconds (s)','TotalStorage');
+    fprintf('%5s %18s %18s %16s\n', ...
+        'p','CoreStorage','RelativeError','TotalStorage');
 
     for t = 1:count
         p = pValues(t);
-        times = zeros(opts.repeats,1);
-        for rep = 1:opts.warmups+opts.repeats
-            timer = tic;
-            [model,qrStats] = rc_tlr_build(CP,grids,opts.domain,p,opts.qrTol,opts.strength);
-            seconds = toc(timer);
-            if rep > opts.warmups
-                times(rep-opts.warmups) = seconds;
-            end
-        end
-        buildSeconds(t) = median(times);
+        [model,qrStats] = rc_tlr_build(CP,grids,opts.domain,p,opts.qrTol,opts.strength);
         ranks(t,:) = model.ranks;
         coreStorage{t} = sprintf('%d x %d x %d',model.ranks);
         C = model.C;
@@ -91,18 +75,18 @@ function [results, model, diagnostics] = rc_tlr_1d_experiment(options)
         Y = model.V*model.E2;
         Z = model.W*model.E3;
         totalStorage(t) = numel(C)+numel(X)+numel(Y)+numel(Z);
-        [relativeError(t),~,metrics] = rc_htlr_relative_kernel_error( ...
+        [relativeError(t),metrics] = rc_htlr_relative_kernel_error( ...
             C,X,Y,Z,CP,opts.validation,opts.blockSize);
-        diagnostics{t} = struct('qr',{qrStats},'metrics',metrics,'buildRepeats',times);
-        fprintf('%5d %18s %18.8e %18.6f %16.0f\n', ...
-            p,coreStorage{t},relativeError(t),buildSeconds(t),totalStorage(t));
+        diagnostics{t} = struct('qr',{qrStats},'metrics',metrics);
+        fprintf('%5d %18s %18.8e %16.0f\n', ...
+            p,coreStorage{t},relativeError(t),totalStorage(t));
         if opts.stopWhenMet && relativeError(t)<=opts.tol, break; end
     end
     take = 1:t;
     diagnostics = diagnostics(take);
     results = table(pValues(take),ranks(take,1),ranks(take,2),ranks(take,3), ...
-        coreStorage(take),relativeError(take),buildSeconds(take),buildSeconds(take), ...
+        coreStorage(take),relativeError(take), ...
         totalStorage(take),relativeError(take)<=opts.tol, ...
         'VariableNames',{'p','rX','rY','rZ','CoreStorage','RelativeError', ...
-        'BuildSeconds','TotalTime','TotalStorage','ToleranceMet'});
+        'TotalStorage','ToleranceMet'});
 end

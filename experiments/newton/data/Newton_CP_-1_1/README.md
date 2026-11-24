@@ -1,6 +1,6 @@
 # Newton CP input data
 
-Place the following original MAT files here after downloading them from [the pinned ChebTuck repository](https://github.com/bonans/ChebTuck/tree/2aa3729fe9991377bf1a6815ab3edd73423689dd/data/Newton_CP_-1_1):
+The following original MAT files are included, with bytes verified against [the pinned ChebTuck repository](https://github.com/bonans/ChebTuck/tree/2aa3729fe9991377bf1a6815ab3edd73423689dd/data/Newton_CP_-1_1):
 
 - `Newt_canon_256.mat`
 - `Newt_canon_512.mat`
@@ -9,4 +9,4 @@ Place the following original MAT files here after downloading them from [the pin
 - `Newt_canon_4096.mat`
 - `Newt_canon_8192.mat` (optional; not used by the default Newton sweep)
 
-The files are external benchmark inputs and are not bundled here. Alternatively, pass their actual directory to the Newton experiment function or set `opts.dataDir` for the standalone experiment. See the [experiment instructions](../../README.md).
+The original benchmark data are bundled here for reproducibility. Alternatively, pass their actual directory to the Newton experiment function or set `opts.dataDir` for the standalone experiment. See the [experiment instructions](../../README.md).
