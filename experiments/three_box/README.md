@@ -34,6 +34,8 @@ The driver contains all required local helpers. It produces relative error, rank
 
 ## Manuscript figures (original supplied plots)
 
+These three images constitute [manuscript Figure 1 (page 12)](../../figures/README.md#figure-1--effect-of-quadrature-weighting-p-12-section-33), with relative error upper left, storage upper right, and construction time below.
+
 The three supplied figures are preserved unchanged, including the previously measured ChebTuck baseline. The new driver generates only the weighted/unweighted RC-TLR curves; it does not execute or reproduce the ChebTuck baseline. The original figures are historical experimental outputs, not newly measured results from this refactored driver.
 
 | Figure | File |

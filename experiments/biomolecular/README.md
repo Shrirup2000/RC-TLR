@@ -5,6 +5,10 @@ Tucker approximation using deterministic strong rank-revealing QR. The module
 also retains the optional lattice experiment from the supplied numerical suite.
 It has no baseline approximation implementation or baseline experiment driver.
 
+## Manuscript figures
+
+See the [manuscript figure gallery](../../figures/README.md) for Figures 2–11, covering the supplied CP input, spline approximation, grid refinement, interpolation, fragment-size scaling, coefficient-factor spectra and lattice results. All paper images are archived unchanged, including the ChebTuck baseline panels. They are reference results, not an additional method implementation. The draft's biomolecular and lattice standard RRQR tolerance is 1e-7; the current driver defaults to 4e-8. The gallery documents how to select the manuscript tolerance without modifying the solver.
+
 ## Run in MATLAB R2024b
 
 From the repository root:

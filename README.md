@@ -1,6 +1,10 @@
 # RC-TLR
 Quadrature-weighted interpolatory Tucker approximation using strong RRQR.
 
+## Manuscript figures
+
+[View the complete manuscript figure gallery](figures/README.md) (Figures 1–11, all 17 original image files, arranged by manuscript page and panel). The archived comparison figures are historical paper results; the executable MATLAB implementations remain RC-TLR-only.
+
 ## Reproduce all numerical experiments
 
 Clone or download this repository, open its root directory in **MATLAB R2024b**, and run:
