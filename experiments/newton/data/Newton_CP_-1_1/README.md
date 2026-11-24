@@ -7,6 +7,6 @@ Place the following original MAT files here after downloading them from [the pin
 - `Newt_canon_1024.mat`
 - `Newt_canon_2048.mat`
 - `Newt_canon_4096.mat`
-- `Newt_canon_8192.mat` (optional; not used by the default comparison sweep)
+- `Newt_canon_8192.mat` (optional; not used by the default Newton sweep)
 
-The files are external benchmark inputs and are not bundled here. Alternatively, pass their actual directory to the comparison function or set `opts.dataDir` for the standalone experiment. See the [experiment instructions](../../README.md).
+The files are external benchmark inputs and are not bundled here. Alternatively, pass their actual directory to the Newton experiment function or set `opts.dataDir` for the standalone experiment. See the [experiment instructions](../../README.md).
