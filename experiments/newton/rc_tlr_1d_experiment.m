@@ -1,7 +1,7 @@
 function [results, model, diagnostics] = rc_tlr_1d_experiment(options)
 %RC_TLR_1D_EXPERIMENT RC-TLR on the long-range Newton CP input.
 %   The defaults are n=256, pValues=[129 257 513 1025], relative-error
-%   target tol=1e-7, and weighted RRQR tolerance qrTol=5e-8. The default
+%   target tol=1e-7, and weighted RRQR tolerance qrTol=1e-9. The default
 %   validation metric is relative maximum error on the whole middle slice.
 %   Set validation='full' for the full-volume relative Frobenius error.
 %
@@ -12,7 +12,7 @@ function [results, model, diagnostics] = rc_tlr_1d_experiment(options)
     if nargin < 1 || isempty(options), options = struct; end
     assert(isstruct(options) && isscalar(options),'Options must be a scalar struct.');
     opts = struct('n',256,'pValues',[129 257 513 1025], ...
-        'tol',1e-7,'qrTol',5e-8,'strength',2,'blockSize',8, ...
+        'tol',1e-7,'qrTol',1e-9,'strength',2,'blockSize',8, ...
         'validation','slice','stopWhenMet',true, ...
         'dataDir',[],'CP',[],'grids',[],'domain',repmat([-1 1],3,1));
     names = fieldnames(options);

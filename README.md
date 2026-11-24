@@ -52,8 +52,8 @@ mean every row satisfies the target error. Inspect each results table for
 its accuracy checks. Failed stages or grids are recorded explicitly rather
 than being represented as measured zero errors.
 
-The full runner preserves the supplied numerical settings: the Newton
-drivers use RRQR tolerance 5e-8, the three-box and biomolecular drivers
+The full runner uses the configured numerical settings: the Newton
+drivers use RRQR tolerance 1e-9, the three-box and biomolecular drivers
 use 4e-8, and the target final relative error is 1e-7. The Newton sweeps
 cover five grid sizes (70 total full/long-range configurations); the
 standalone CP experiment uses its existing stopping criterion. The

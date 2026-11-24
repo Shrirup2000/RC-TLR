@@ -1,6 +1,6 @@
 # Coulomb / Newton kernel experiments
 
-This module contains the supplied MATLAB implementations for the cell-averaged Coulomb (Newton) kernel on ([-1,1]^3), with both the full canonical tensor and its long-range component. It also contains a standalone RC-TLR CP-input experiment. Only RC-TLR is implemented; the strong RRQR tolerance follows the final manuscript.
+This module contains the supplied MATLAB implementations for the cell-averaged Coulomb (Newton) kernel on ([-1,1]^3), with both the full canonical tensor and its long-range component. It also contains a standalone RC-TLR CP-input experiment. Only RC-TLR is implemented; the default strong RRQR tolerance is 1e-9.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ For the standalone RC-TLR CP-input experiment:
 
 ```matlab
 opts = struct('n',256,'pValues',129,'dataDir',dataDir, ...
-              'qrTol',5e-8);
+              'qrTol',1e-9);
 [results,model,diagnostics] = rc_tlr_1d_experiment(opts);
 disp(results);
 ```
@@ -55,12 +55,12 @@ Increase node counts only after checking available memory. The general builder c
 | Grid sizes | 256, 512, 1024, 2048, 4096 | 256 |
 | Full kernel node counts | 129, 257, 513, 1025, 2049, 4097, 8193, 16385 | Not the default input |
 | Long-range node counts | 129, 257, 513, 1025, 2049, 4097 | 129, 257, 513, 1025 |
-| RC-TLR RRQR tolerance | 5e-8 | 5e-8 (configurable) |
+| RC-TLR RRQR tolerance | 1e-9 | 1e-9 (configurable) |
 | Target relative error | 1e-7 | 1e-7 |
 | Strong RRQR strength | 2 | 2 (configurable) |
 | Validation | Relative maximum error, complete middle slice | Same by default; full-grid Frobenius error optional |
 
-The RRQR tolerance and the target final approximation error are distinct parameters. Both RC-TLR Newton entry points use a default strong RRQR tolerance of 5e-8, as selected in the final manuscript. The target final error remains 1e-7.
+The RRQR tolerance and the target final approximation error are distinct parameters. Both RC-TLR Newton entry points use a default strong RRQR tolerance of 1e-9. The target final error remains 1e-7.
 
 ## Files
 
@@ -82,4 +82,4 @@ The grid storage reported is the selected/compressed core plus the three evaluat
 
 Benchmark input data originate from Benner, Khoromskij, Khoromskaia and Sun, *A Hybrid Chebyshev--Tucker Tensor Format for Approximation of Multivariate Functions*, [arXiv:2503.01696](https://arxiv.org/abs/2503.01696). See the [original repository](https://github.com/bonans/ChebTuck) and [upstream MIT license notice](LICENSE-ChebTuck.txt). No ChebTuck approximation implementation is included.
 
-The RC-TLR-only Newton driver retains the original RC-TLR construction and validation settings. Dependencies were inspected statically; MATLAB execution and verification against the manuscript tables are still pending. The original input datasets are bundled; measured result tables are not bundled.
+The RC-TLR-only Newton driver retains the original RC-TLR construction and validation procedures, with the updated RRQR tolerance. Dependencies were inspected statically; MATLAB execution and verification against the manuscript tables are still pending. The original input datasets are bundled; measured result tables are not bundled.

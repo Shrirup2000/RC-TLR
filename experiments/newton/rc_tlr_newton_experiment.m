@@ -5,7 +5,7 @@ function [results, firstPass] = rc_tlr_newton_experiment(dataDir, nValues, pFull
 %   Storage counts the selected core and all three evaluated grid factors.
 
     target = 1e-7;
-    rrqrTol = 5e-8;
+    rrqrTol = 1e-9;
     strength = 2;
 
     if nargin < 1 || isempty(dataDir)
