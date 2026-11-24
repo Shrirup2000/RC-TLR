@@ -33,7 +33,7 @@ function [results, firstPass] = compare_newton_paper( ...
     pLong = unique(pLong(:).');
 
     target = 1e-7;
-    rrqrTol = 1e-9;
+    rrqrTol = 5e-8;
     chebTol = 1e-7;
     strength = 2;
 

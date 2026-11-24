@@ -1,6 +1,6 @@
 # Coulomb / Newton kernel experiments
 
-This module contains the supplied MATLAB implementations for the cell-averaged Coulomb (Newton) kernel on ([-1,1]^3), with both the full canonical tensor and its long-range component. It also contains a standalone RC-TLR CP-input experiment. The original MATLAB source files are preserved without numerical or naming changes.
+This module contains the supplied MATLAB implementations for the cell-averaged Coulomb (Newton) kernel on ([-1,1]^3), with both the full canonical tensor and its long-range component. It also contains a standalone RC-TLR CP-input experiment. The comparison driver's strong RRQR tolerance has been aligned with the final manuscript; other uploaded MATLAB source settings are retained.
 
 ## Requirements
 
@@ -55,13 +55,13 @@ Increase node counts only after checking available memory. The general builder c
 | Grid sizes | 256, 512, 1024, 2048, 4096 | 256 |
 | Full kernel node counts | 129, 257, 513, 1025, 2049, 4097, 8193, 16385 | Not the default input |
 | Long-range node counts | 129, 257, 513, 1025, 2049, 4097 | 129, 257, 513, 1025 |
-| RC-TLR RRQR tolerance | 1e-9 | 5e-8 (configurable) |
+| RC-TLR RRQR tolerance | 5e-8 | 5e-8 (configurable) |
 | ChebTuck compression tolerance | 1e-7 | Not applicable |
 | Target relative error | 1e-7 | 1e-7 |
 | Strong RRQR strength | 2 | 2 (configurable) |
 | Validation | Relative maximum error, complete middle slice | Same by default; full-grid Frobenius error optional |
 
-The RRQR tolerance and the target final approximation error are distinct parameters. These defaults reflect the uploaded implementation; confirm them against the final manuscript before reproducing publication tables. In particular, the two entry points still use different RRQR defaults.
+The RRQR tolerance and the target final approximation error are distinct parameters. Both RC-TLR Newton entry points use a default strong RRQR tolerance of 5e-8, as selected in the final manuscript. The target final error and the ChebTuck compression tolerance remain 1e-7.
 
 ## Files
 
@@ -83,4 +83,4 @@ The grid storage reported is the selected/compressed core plus the three evaluat
 
 Benchmark data and the ChebTuck comparison methodology originate from Benner, Khoromskij, Khoromskaia and Sun, *A Hybrid Chebyshev--Tucker Tensor Format for Approximation of Multivariate Functions*, [arXiv:2503.01696](https://arxiv.org/abs/2503.01696). See the [original repository](https://github.com/bonans/ChebTuck) and [upstream MIT license notice](LICENSE-ChebTuck.txt). The standalone comparison is an implementation of the cited approach; it is not a claim that it is the unmodified upstream ChebTuck driver.
 
-The MATLAB source files are checked in as supplied. Dependencies were inspected statically; MATLAB execution and verification against the manuscript tables are still pending. Input datasets and measured result tables are not included in this commit.
+The MATLAB source files are checked in with the final-manuscript Newton RRQR tolerance adjustment described above. Dependencies were inspected statically; MATLAB execution and verification against the manuscript tables are still pending. Input datasets and measured result tables are not included in this commit.
